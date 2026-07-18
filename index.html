@@ -9,6 +9,7 @@
     <input type="text" id="eventTitle" placeholder="Event Title">
     <input type="date" id="eventDate">
     <button onclick="addEvent()">Add Event</button>
+    <button onclick="exportJSON()">Export to JSON</button>
     <ul id="eventList"></ul>
     <script>
         let events = [];
@@ -19,6 +20,15 @@
             const event = { id: Date.now(), title, date };
             events.push(event);
             render();
+        }
+        function exportJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(events));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "calendar_events.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
         }
         function deleteEvent(id) {
             events = events.filter(e => e.id !== id);
