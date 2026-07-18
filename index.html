@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>AI Calendar Tracker</title>
+    <style>body { font-family: Arial, sans-serif; margin: 40px; }</style>
+</head>
+<body>
+    <h2>Calendar Tracker v1</h2>
+    <input type="text" id="eventTitle" placeholder="Event Title">
+    <input type="date" id="eventDate">
+    <button onclick="addEvent()">Add Event</button>
+    <ul id="eventList"></ul>
+    <script>
+        let events = [];
+        function addEvent() {
+            const title = document.getElementById('eventTitle').value;
+            const date = document.getElementById('eventDate').value;
+            if (!title || !date) return alert('Fill fields');
+            const event = { id: Date.now(), title, date };
+            events.push(event);
+            render();
+        }
+        function deleteEvent(id) {
+            events = events.filter(e => e.id !== id);
+            render();
+        }
+        function render() {
+            const list = document.getElementById('eventList');
+            list.innerHTML = '';
+            events.forEach(e => {
+                list.innerHTML += `<li>${e.date} - ${e.title} <button onclick="deleteEvent(${e.id})">Delete</button></li>`;
+            });
+        }
+    </script>
+</body>
+</html>
