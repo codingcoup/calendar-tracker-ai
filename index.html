@@ -12,7 +12,7 @@
     <button onclick="exportJSON()">Export to JSON</button>
     <ul id="eventList"></ul>
     <script>
-        let events = [];
+        let events = JSON.parse(localStorage.getItem('events')) || [];
         function addEvent() {
             const title = document.getElementById('eventTitle').value;
             const date = document.getElementById('eventDate').value;
@@ -20,6 +20,7 @@
             const event = { id: Date.now(), title, date };
             events.push(event);
             render();
+            localStorage.setItem('events', JSON.stringify(events));
         }
         function exportJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(events));
@@ -33,6 +34,7 @@
         function deleteEvent(id) {
             events = events.filter(e => e.id !== id);
             render();
+            localStorage.setItem('events', JSON.stringify(events));
         }
         function render() {
             const list = document.getElementById('eventList');
@@ -41,6 +43,7 @@
                 list.innerHTML += `<li>${e.date} - ${e.title} <button onclick="deleteEvent(${e.id})">Delete</button></li>`;
             });
         }
+        window.onload = render;
     </script>
 </body>
 </html>
