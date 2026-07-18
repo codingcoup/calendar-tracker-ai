@@ -6,6 +6,8 @@
 </head>
 <body>
     <h2>Calendar Tracker v1</h2>
+    
+    <div id="reminderBox" style="color: #d9534f; font-weight: bold; margin-bottom: 20px;"></div>
     <input type="text" id="eventTitle" placeholder="Event Title">
     <select id="eventCategory">
         <option value="Work">💼 Work</option>
@@ -18,7 +20,25 @@
     <ul id="eventList"></ul>
     <script>
         let events = JSON.parse(localStorage.getItem('events')) || [];
-        window.onload = render;
+        window.onload = function() {
+            render();
+            checkReminders();
+        };
+
+        function checkReminders() {
+            const reminderBox = document.getElementById('reminderBox');
+            reminderBox.innerHTML = ''; // Clear previous messages
+
+            // Get today's local system date formatted as YYYY-MM-DD
+            const today = new Date().toISOString().split('T')[0];
+
+            // Filter events that match today's date
+            const todaysEvents = events.filter(e => e.date === today);
+
+            if (todaysEvents.length > 0) {
+                reminderBox.innerHTML = `⚠️ REMINDER: You have ${todaysEvents.length} event(s) scheduled for today!`;
+            }
+        }
 
         function addEvent() {
             const title = document.getElementById('eventTitle').value;
