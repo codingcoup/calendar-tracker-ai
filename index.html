@@ -7,20 +7,45 @@
 <body>
     <h2>Calendar Tracker v1</h2>
     <input type="text" id="eventTitle" placeholder="Event Title">
+    <select id="eventCategory">
+        <option value="Work">💼 Work</option>
+        <option value="Personal">🏠 Personal</option>
+        <option value="Fitness">🏋️ Fitness</option>
+    </select>
     <input type="date" id="eventDate">
     <button onclick="addEvent()">Add Event</button>
     <button onclick="exportJSON()">Export to JSON</button>
     <ul id="eventList"></ul>
     <script>
         let events = JSON.parse(localStorage.getItem('events')) || [];
+        window.onload = render;
+
         function addEvent() {
             const title = document.getElementById('eventTitle').value;
             const date = document.getElementById('eventDate').value;
-            if (!title || !date) return alert('Fill fields');
-            const event = { id: Date.now(), title, date };
+            const category = document.getElementById('eventCategory').value; // Capture category
+
+            if (!title || !date) return alert('Please fill out all fields');
+
+            const event = { id: Date.now(), title, date, category };
             events.push(event);
-            render();
             localStorage.setItem('events', JSON.stringify(events));
+            render();
+        }
+
+        function deleteEvent(id) {
+            events = events.filter(e => e.id !== id);
+            localStorage.setItem('events', JSON.stringify(events));
+            render();
+        }
+
+        function render() {
+            const list = document.getElementById('eventList');
+            list.innerHTML = '';
+            events.forEach(e => {
+                // Display the category badge alongside the date and title
+                list.innerHTML += `<li>[${e.category}] ${e.date} - ${e.title} <button onclick="deleteEvent(${e.id})">Delete</button></li>`;
+            });
         }
         function exportJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(events));
@@ -31,19 +56,6 @@
             downloadAnchor.click();
             downloadAnchor.remove();
         }
-        function deleteEvent(id) {
-            events = events.filter(e => e.id !== id);
-            render();
-            localStorage.setItem('events', JSON.stringify(events));
-        }
-        function render() {
-            const list = document.getElementById('eventList');
-            list.innerHTML = '';
-            events.forEach(e => {
-                list.innerHTML += `<li>${e.date} - ${e.title} <button onclick="deleteEvent(${e.id})">Delete</button></li>`;
-            });
-        }
-        window.onload = render;
     </script>
 </body>
 </html>
